@@ -12,40 +12,44 @@ const getData = async() => {
 
 
 
-
-const currency = getData().then((data) => {
-console.log(data);
-
+const func = async () => {
+  const data = await getData();
+  console.log(data);
+  
   const currencyCode = Object.keys(data.conversion_rates);
   const fromCurrency = document.getElementById("fromCurrency");
   const toCurrency = document.getElementById("toCurrency");
-  
-  
-  const countryCode = currencyCode.map(code => {
-      fromCurrency.innerHTML += `
-        <option value="${code}">${code}</option>      
-      `;
-       toCurrency.innerHTML += `
-        <option value="${code}">${code}</option>      
-      `;
 
-  })
+  const countryCode = currencyCode.map((code) => {
+    fromCurrency.innerHTML += `
+        <option value="${code}">${code}</option>      
+      `;
+    toCurrency.innerHTML += `
+        <option value="${code}">${code}</option>      
+      `;
+  });
   document.getElementById("convert-btn").addEventListener("click", (event) => {
     event.preventDefault();
     const fromAmount = Number(document.getElementById("form-amount").value);
     const fromCurrencyValue = fromCurrency.value;
     const toCurrencyValue = toCurrency.value;
-    
-    const findFormCountryCode = currencyCode.find(c => c === fromCurrencyValue);
-    const findToCountryCode = currencyCode.find(c => c === toCurrencyValue);
-    
+
+    const findFormCountryCode = currencyCode.find(
+      (c) => c === fromCurrencyValue
+    );
+    const findToCountryCode = currencyCode.find((c) => c === toCurrencyValue);
+
     const getFromCurrencyRate = data.conversion_rates[`${findFormCountryCode}`];
     const getToCurrencyRate = data.conversion_rates[`${findToCountryCode}`];
 
-    const currencyRate = (getFromCurrencyRate * getToCurrencyRate).toFixed(2);
-    const finalRate = (currencyRate * fromAmount).toFixed(2);
-
-    // show display amount 
+    
+    let currencyRate = getToCurrencyRate / getFromCurrencyRate;
+    
+    let finalRate = (fromAmount * getToCurrencyRate) / getFromCurrencyRate;
+    currencyRate = checkDigits(currencyRate);
+    finalRate = checkDigits(finalRate);
+    console.log(currencyRate, finalRate);
+    // show display amount
     const displayAmount = document.getElementById("show-amount");
 
     displayAmount.innerHTML = `
@@ -60,9 +64,25 @@ console.log(data);
     `;
 
     document.getElementById("form-amount").value = fromAmount.toFixed(2);
-    
   });
+}
 
-});
+func();
+
+function checkDigits(num) {
+  // console.log(num);
+   if (num < 1) {
+     num = num.toPrecision(2);
+     return num;
+    //  console.log(num);
+   } else {
+     num = num.toFixed(2);
+     return num;
+    //  console.log(num);
+   }
+ }
+// const currency = getData().then((data) => {
+
+
 
 
