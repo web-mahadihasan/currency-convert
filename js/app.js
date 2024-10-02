@@ -33,7 +33,10 @@ const func = async () => {
     const fromAmount = Number(document.getElementById("form-amount").value);
     const fromCurrencyValue = fromCurrency.value;
     const toCurrencyValue = toCurrency.value;
-
+    if(fromAmount <= 0){
+      alert `invalid amount`
+    }else{
+      
     const findFormCountryCode = currencyCode.find(
       (c) => c === fromCurrencyValue
     );
@@ -42,9 +45,8 @@ const func = async () => {
     const getFromCurrencyRate = data.conversion_rates[`${findFormCountryCode}`];
     const getToCurrencyRate = data.conversion_rates[`${findToCountryCode}`];
 
-    
     let currencyRate = getToCurrencyRate / getFromCurrencyRate;
-    
+
     let finalRate = (fromAmount * getToCurrencyRate) / getFromCurrencyRate;
     currencyRate = checkDigits(currencyRate);
     finalRate = checkDigits(finalRate);
@@ -64,6 +66,7 @@ const func = async () => {
     `;
 
     document.getElementById("form-amount").value = fromAmount.toFixed(2);
+    }
   });
 }
 
